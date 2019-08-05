@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Vendor\Repository\Contracts;
+namespace Gerfey\Repository\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 

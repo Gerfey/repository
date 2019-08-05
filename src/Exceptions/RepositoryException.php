@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Vendor\Repository\Exception;
+namespace Gerfey\Repository\Exception;
 
 class RepositoryException extends \Exception
 {

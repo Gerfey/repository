@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Vendor\Repository;
+namespace Gerfey\Repository;
 
-use App\Vendor\Repository\Contracts\RepositoryInterface;
-use App\Vendor\Repository\Exception\RepositoryException;
+use Gerfey\Repository\Contracts\RepositoryInterface;
+use Gerfey\Repository\Exception\RepositoryException;
 use Illuminate\Container\Container as App;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
