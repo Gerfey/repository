@@ -1,39 +1,40 @@
 {
-    "name": "gerfey/repository",
-    "description": "Laravel Repositories",
-    "license": "MIT",
-    "homepage": "https://vk.com/gerfey",
-    "keywords": [
-        "laravel",
-        "repository",
-        "repositories",
-        "eloquent",
-        "database"
-    ],
-    "authors": [
-        {
-            "name": "Alexander Levchenkov",
-            "email": "sanjia@live.ru"
-        }
-    ],
-    "require": {
-        "php": "^7.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "Gerfey\\Repository\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Gerfey\\Repository\\Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.x-dev"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+  "name": "gerfey/repository",
+  "description": "Laravel Repositories",
+  "license": "MIT",
+  "homepage": "https://vk.com/gerfey",
+  "keywords": [
+    "Gerfey",
+    "laravel",
+    "repository",
+    "repositories",
+    "eloquent",
+    "database"
+  ],
+  "authors": [
+    {
+      "name": "Alexander Levchenkov",
+      "email": "sanjia@live.ru"
+    }
+  ],
+  "require": {
+    "php": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Gerfey\\Repository\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Gerfey\\Repository\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.x-dev"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
