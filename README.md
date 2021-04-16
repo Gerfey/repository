@@ -14,43 +14,79 @@ Laravel Repositories - это пакет для Laravel 7+, который ис�
 
 ## Использование
 
-Создаем модель
+Начинаем работу с ввода artisan-команды:
+ ```bash
+ php artisan make:repository Test
+ ```
+
+### Автоматически создается модель
 
 ```php
-<?php namespace App\Models;
+<?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Test extends Model
 {
-    protected $table = 'test';
+
 }
 ```
 
-Cоздаем КлассРепозиторий ```Gerfey\Repository\Repository``` и переопределяем свойство entity
+### Автоматически создается КлассРепозиторий
 
 ```php
-<?php namespace App\Repositories;
+<?php namespace App\Repository;
 
 use Gerfey\Repository\Repository;
-use App\Models\Test;
+use App\Test;
 
 class TestRepository extends Repository {
     protected $entity = Test::class;
 }
 ```
 
-Используем репозиторий в вашем Controller
+### Добавляем метод для выборки всех неактивных сущностей
+```php
+<?php
+
+namespace App\Repository;
+
+use App\Test;
+use Gerfey\Repository\Repository;
+use Illuminate\Database\Eloquent\Collection;
+
+class TestRepository extends Repository
+{
+    /**
+     * @var string
+     */
+    protected $entity = Test::class;
+
+    /**
+     * @return Collection
+     */
+    public function getAllByNoActive(): Collection
+    {
+        return $this->createQueryBuilder()
+            ->where('active', '=', false)
+            ->get();
+    }
+}
+
+
+```
+
+теперь в любом **Controller** вызываем **TestRepository** и вызываем ранее созданный метод.
 
 ```php
 <?php namespace App\Http\Controllers;
 
-use App\Repositories\TestRepository;
+use App\Repository\TestRepository;
 
 class TestController extends Controller {
 
     public function index(TestRepository $testRepository) {
-        $result = $testRepository->all();
+        $result = $testRepository->getAllByNoActive();
         return \Response::json($result->toArray());
     }
 }

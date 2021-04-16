@@ -1,0 +1,15 @@
+<?php
+
+namespace __RepositoryClassNamespace__;
+
+use Gerfey\Repository\Repository;
+use __ModelClassNamespace__;
+
+class __RepositoryClassName__ extends Repository
+{
+    /**
+     * @var string
+     */
+    protected $entity = __ModelClassName__::class;
+}
+

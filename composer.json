@@ -1,40 +1,45 @@
 {
-  "name": "gerfey/repository",
-  "description": "Creating a Laravel Repositories",
-  "license": "MIT",
-  "homepage": "https://vk.com/gerfey",
-  "keywords": [
-    "Gerfey",
-    "laravel",
-    "repository",
-    "repositories",
-    "eloquent",
-    "database"
-  ],
-  "authors": [
-    {
-      "name": "Alexander Levchenkov",
-      "email": "sanjia@live.ru"
-    }
-  ],
-  "require": {
-    "php": "^7.1"
-  },
-  "autoload": {
-    "psr-4": {
-      "Gerfey\\Repository\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Gerfey\\Repository\\Tests\\": "tests/"
-    }
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "0.1.2-dev"
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+    "name": "gerfey/repository",
+    "description": "Creating a Laravel Repositories",
+    "license": "MIT",
+    "homepage": "https://vk.com/gerfey",
+    "keywords": [
+        "Gerfey",
+        "laravel",
+        "repository",
+        "repositories",
+        "eloquent",
+        "database"
+    ],
+    "authors": [
+        {
+            "name": "Alexander Levchenkov",
+            "email": "sanjia@live.ru"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gerfey\\Repository\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Gerfey\\Repository\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.3-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Gerfey\\Repository\\RepositoryServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
