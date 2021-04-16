@@ -1,6 +1,6 @@
 # Laravel Repositories
 
-Laravel Repositories - это пакет для Laravel 5, который используется для абстрагирования слоя базы данных.
+Laravel Repositories - это пакет для Laravel 7+, который используется для абстрагирования слоя базы данных.
 
 ## Установка
 
@@ -45,12 +45,13 @@ class TestRepository extends Repository {
 ```php
 <?php namespace App\Http\Controllers;
 
-use App\Repositories\TestRepository as Test;
+use App\Repositories\TestRepository;
 
 class TestController extends Controller {
 
-    public function index(Test $test) {
-        return \Response::json($test->all());
+    public function index(TestRepository $testRepository) {
+        $result = $testRepository->all();
+        return \Response::json($result->toArray());
     }
 }
 ```

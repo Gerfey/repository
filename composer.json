@@ -1,6 +1,6 @@
 {
   "name": "gerfey/repository",
-  "description": "Laravel Repositories",
+  "description": "Creating a Laravel Repositories",
   "license": "MIT",
   "homepage": "https://vk.com/gerfey",
   "keywords": [
@@ -32,7 +32,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.x-dev"
+      "dev-master": "0.1.2-dev"
     }
   },
   "minimum-stability": "dev",

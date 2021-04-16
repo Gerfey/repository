@@ -3,74 +3,109 @@
 namespace Gerfey\Repository\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * Interface RepositoryInterface
- *
- * @package App\Vendor\Repository\Contracts
- */
 interface RepositoryInterface
 {
     /**
      * @param array $columns
-     * @return mixed
+     *
+     * @return Collection
      */
-    public function all($columns = ['*']);
+    public function all(array $columns = ['*']): Collection;
 
     /**
-     * @param $id
+     * @param string $id
      * @param array $columns
-     * @return mixed
+     *
+     * @return Model|null
      */
-    public function find($id, $columns = ['*']);
+    public function find(string $id, array $columns = ['*']): ?Model;
 
     /**
-     * @param $field
-     * @param $value
+     * @param string $id
      * @param array $columns
-     * @return mixed
+     *
+     * @return Model
+     *
+     * @throws ModelNotFoundException
      */
-    public function findBy($field, $value, $columns = ['*']);
+    public function findOrFail(string $id, array $columns = ['*']): Model;
 
     /**
-     * @param $field
-     * @param $value
+     * @param array $ids
      * @param array $columns
-     * @return mixed
+     *
+     * @return Collection
      */
-    public function findAllBy($field, $value, $columns = ['*']);
+    public function findMany(array $ids, array $columns = ['*']): Collection;
+
+    /**
+     * @param string $attribute
+     * @param mixed $value
+     * @param array $columns
+     *
+     * @return Model|null
+     */
+    public function findBy(string $attribute, $value, array $columns = ['*']): ?Model;
+
+    /**
+     * @param string $attribute
+     * @param mixed $value
+     * @param array $columns
+     *
+     * @return Collection
+     */
+    public function findAllBy(string $attribute, $value, $columns = ['*']): Collection;
 
     /**
      * @param array $data
-     * @return mixed
+     *
+     * @return Model
      */
-    public function create(array $data);
+    public function create(array $data): Model;
 
     /**
      * @param array $data
+     *
      * @return bool
      */
-    public function save(array $data);
+    public function save(array $data): bool;
+
+    /**
+     * @param array $attributes
+     * @param array $options
+     *
+     * @return bool
+     */
+    public function update(array $attributes = [], array $options = []): bool;
 
     /**
      * @param array $data
-     * @param $id
-     * @return mixed
+     * @param $value
+     * @param string $attribute
+     *
+     * @return bool
      */
-    public function update(array $data, $id);
+    public function updateBy(array $data, $value, string $attribute = 'id'): bool;
 
     /**
      * @param $id
-     * @return mixed
+     *
+     * @return int
      */
-    public function delete($id);
+    public function delete($id): int;
 
     /**
-     * @param $perPage
+     * @param int $perPage
      * @param array $columns
+     *
      * @return mixed
      */
-    public function paginate($perPage = 1, $columns = ['*']);
+    public function paginate(int $perPage = 1, array $columns = ['*']): LengthAwarePaginator;
 
     /**
      * @return Builder

@@ -4,102 +4,149 @@ namespace Gerfey\Repository;
 
 use Gerfey\Repository\Contracts\RepositoryInterface;
 use Gerfey\Repository\Exception\RepositoryException;
-use Illuminate\Container\Container as App;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * Class Repository
- *
- * @package App\Vendor\Repository
- */
 abstract class Repository implements RepositoryInterface
 {
-    private $app;
-
+    /**
+     * @var string
+     */
     protected $entity;
 
-    protected $model;
+    /**
+     * @var Model
+     */
+    private $model;
 
     /**
-     * Repository constructor.
-     * @param App $app
-     * @throws BindingResolutionException
      * @throws RepositoryException
+     * @throws BindingResolutionException
      */
     public function __construct()
     {
-        $this->app = new App();
-        $this->setModel();
+        $this->model = Container::getInstance()->make($this->entity);
+
+        if (!$this->model instanceof Model) {
+            throw new RepositoryException(
+                "Class {$this->model} must be an instance of Illuminate\\Database\\Eloquent\\Model"
+            );
+        }
     }
 
     /**
      * @param array $columns
-     * @return mixed
+     *
+     * @return Collection
      */
-    public function all($columns = ['*'])
+    public function all(array $columns = ['*']): Collection
     {
         return $this->model->get($columns);
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @param array $columns
-     * @return mixed
+     *
+     * @return Model|null
      */
-    public function find($id, $columns = ['*'])
+    public function find(string $id, array $columns = ['*']): ?Model
     {
         return $this->model->find($id, $columns);
     }
 
     /**
-     * @param string $attribute
-     * @param $value
+     * @param string $id
      * @param array $columns
-     * @return mixed
+     *
+     * @return Model
+     *
+     * @throws ModelNotFoundException
      */
-    public function findBy($attribute, $value, $columns = ['*'])
+    public function findOrFail(string $id, array $columns = ['*']): Model
+    {
+        return $this->model->findOrFail($id, $columns);
+    }
+
+    /**
+     * @param array $ids
+     * @param array $columns
+     *
+     * @return Collection
+     */
+    public function findMany(array $ids, array $columns = ['*']): Collection
+    {
+        return $this->model->findMany($ids, $columns);
+    }
+
+    /**
+     * @param string $attribute
+     * @param mixed $value
+     * @param array $columns
+     *
+     * @return Model|null
+     */
+    public function findBy(string $attribute, $value, array $columns = ['*']): ?Model
     {
         return $this->model->where($attribute, '=', $value)->first($columns);
     }
 
     /**
      * @param string $attribute
-     * @param $value
+     * @param mixed $value
      * @param array $columns
-     * @return mixed
+     *
+     * @return Collection
      */
-    public function findAllBy($attribute, $value, $columns = ['*'])
+    public function findAllBy(string $attribute, $value, $columns = ['*']): Collection
     {
         return $this->model->where($attribute, '=', $value)->get($columns);
     }
 
     /**
      * @param array $data
-     * @return mixed
+     *
+     * @return Model
      */
-    public function create(array $data)
+    public function create(array $data): Model
     {
         return $this->model->create($data);
     }
 
     /**
-     * @param array $data
-     * @param $id
-     * @param string $attribute
-     * @return mixed
+     * @param array $attributes
+     * @param array $options
+     *
+     * @return bool
      */
-    public function update(array $data, $id, $attribute = "id")
+    public function update(array $attributes = [], array $options = []): bool
     {
-        return $this->model->where($attribute, '=', $id)->update($data);
+        return $this->model->fill($attributes)->save($options);
     }
 
     /**
      * @param array $data
-     * @return mixed
+     * @param mixed $value
+     * @param string $attribute
+     *
+     * @return bool
      */
-    public function save(array $data)
+    public function updateBy(array $data, $value, string $attribute = 'id'): bool
+    {
+        return $this->model->where($attribute, '=', $value)->update($data);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function save(array $data): bool
     {
         foreach ($data as $k => $v) {
             $this->model->$k = $v;
@@ -110,20 +157,22 @@ abstract class Repository implements RepositoryInterface
     /**
      * @param int $perPage
      * @param array $columns
-     * @return mixed
+     *
+     * @return LengthAwarePaginator
      */
-    public function paginate($perPage = 20, $columns = ['*'])
+    public function paginate(int $perPage = 20, array $columns = ['*']): LengthAwarePaginator
     {
         return $this->model->paginate($perPage, $columns);
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param \Illuminate\Support\Collection|array|int|string $ids
+     *
+     * @return int
      */
-    public function delete($id)
+    public function delete($ids): int
     {
-        return $this->model->destroy($id);
+        return $this->model->destroy($ids);
     }
 
     /**
@@ -132,16 +181,5 @@ abstract class Repository implements RepositoryInterface
     public function createQueryBuilder(): Builder
     {
         return $this->model->query();
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws RepositoryException
-     */
-    private function setModel()
-    {
-        $this->model = $this->app->make($this->entity);
-        if (!$this->model instanceof Model)
-            throw new RepositoryException("Class {$this->model} must be an instance of Illuminate\\Database\\Eloquent\\Model");
     }
 }
