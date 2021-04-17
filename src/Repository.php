@@ -50,25 +50,25 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * @param string $id
+     * @param mixed $id
      * @param array $columns
      *
      * @return Model|null
      */
-    public function find(string $id, array $columns = ['*']): ?Model
+    public function find($id, array $columns = ['*']): ?Model
     {
         return $this->model->find($id, $columns);
     }
 
     /**
-     * @param string $id
+     * @param mixed $id
      * @param array $columns
      *
      * @return Model
      *
      * @throws ModelNotFoundException
      */
-    public function findOrFail(string $id, array $columns = ['*']): Model
+    public function findOrFail($id, array $columns = ['*']): Model
     {
         return $this->model->findOrFail($id, $columns);
     }

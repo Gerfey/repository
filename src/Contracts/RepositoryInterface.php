@@ -18,22 +18,22 @@ interface RepositoryInterface
     public function all(array $columns = ['*']): Collection;
 
     /**
-     * @param string $id
+     * @param mixed $id
      * @param array $columns
      *
      * @return Model|null
      */
-    public function find(string $id, array $columns = ['*']): ?Model;
+    public function find($id, array $columns = ['*']): ?Model;
 
     /**
-     * @param string $id
+     * @param mixed $id
      * @param array $columns
      *
      * @return Model
      *
      * @throws ModelNotFoundException
      */
-    public function findOrFail(string $id, array $columns = ['*']): Model;
+    public function findOrFail($id, array $columns = ['*']): Model;
 
     /**
      * @param array $ids
