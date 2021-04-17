@@ -3,18 +3,14 @@
 Laravel Repositories - это пакет для Laravel 7+, который используется для абстрагирования слоя базы данных.
 
 ## Установка
-
-Выполнить команду в консоли:
-
+Используем artisan команду
 
  ```bash
  composer require gerfey/repository
  ```
 
-
 ## Использование
-
-Начинаем работу с ввода artisan-команды:
+Используем artisan команду
  ```bash
  php artisan make:repository Test
  ```
@@ -45,49 +41,42 @@ class TestRepository extends Repository {
 }
 ```
 
-### Добавляем метод для выборки всех неактивных сущностей
+### Создаем критерию
+Используем artisan команду
+ ```bash
+ php artisan make:repository:criteria TestActive
+ ```
+
 ```php
 <?php
 
-namespace App\Repository;
+namespace App\Criteria;
 
-use App\Test;
-use Gerfey\Repository\Repository;
-use Illuminate\Database\Eloquent\Collection;
+use Gerfey\Repository\Contracts\Criteria\CriteriaInterface;
+use Illuminate\Database\Eloquent\Builder;
 
-class TestRepository extends Repository
+class TestActiveCriteria implements CriteriaInterface
 {
-    /**
-     * @var string
-     */
-    protected $entity = Test::class;
-
-    /**
-     * @return Collection
-     */
-    public function getAllByNoActive(): Collection
+    public function apply($model): Builder
     {
-        return $this->createQueryBuilder()
-            ->where('active', '=', false)
-            ->get();
+        return $model->limit(10);
     }
 }
-
-
 ```
 
-теперь в любом **Controller** вызываем **TestRepository** и вызываем ранее созданный метод.
+теперь в любом **Controller** вызываем **TestRepository** и добавляем нашу критерию **TestActiveCriteria**.
 
 ```php
 <?php namespace App\Http\Controllers;
 
 use App\Repository\TestRepository;
+use App\Criteria\TestActiveCriteria;
 
 class TestController extends Controller {
 
-    public function index(TestRepository $testRepository) {
-        $result = $testRepository->getAllByNoActive();
-        return \Response::json($result->toArray());
+    public function index(TestRepository $testRepository) {    
+        $testRepository->addCriteria(new TestActiveCriteria());        
+        return \Response::json($testRepository->all());
     }
 }
 ```

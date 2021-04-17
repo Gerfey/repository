@@ -2,6 +2,7 @@
 
 namespace Gerfey\Repository;
 
+use Gerfey\Repository\Contracts\Criteria\CriteriaInterface;
 use Gerfey\Repository\Contracts\RepositoryInterface;
 use Gerfey\Repository\Exception\RepositoryException;
 use Illuminate\Container\Container;
@@ -25,11 +26,18 @@ abstract class Repository implements RepositoryInterface
     private $model;
 
     /**
+     * @var Collection
+     */
+    private $criterias;
+
+    /**
      * @throws RepositoryException
      * @throws BindingResolutionException
      */
     public function __construct()
     {
+        $this->criterias = new Collection();
+
         $this->model = Container::getInstance()->make($this->entity);
 
         if (!$this->model instanceof Model) {
@@ -40,12 +48,36 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * @param CriteriaInterface $criteria
+     *
+     * @return Repository
+     */
+    public function addCriteria(CriteriaInterface $criteria): self
+    {
+        $this->criterias->push($criteria);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function removeCriterias(): self
+    {
+        $this->criterias = [];
+
+        return $this;
+    }
+
+    /**
      * @param array $columns
      *
      * @return Collection
      */
     public function all(array $columns = ['*']): Collection
     {
+        $this->applyCriterias();
+
         return $this->model->get($columns);
     }
 
@@ -57,6 +89,8 @@ abstract class Repository implements RepositoryInterface
      */
     public function find($id, array $columns = ['*']): ?Model
     {
+        $this->applyCriterias();
+
         return $this->model->find($id, $columns);
     }
 
@@ -70,6 +104,8 @@ abstract class Repository implements RepositoryInterface
      */
     public function findOrFail($id, array $columns = ['*']): Model
     {
+        $this->applyCriterias();
+
         return $this->model->findOrFail($id, $columns);
     }
 
@@ -81,6 +117,8 @@ abstract class Repository implements RepositoryInterface
      */
     public function findMany(array $ids, array $columns = ['*']): Collection
     {
+        $this->applyCriterias();
+
         return $this->model->findMany($ids, $columns);
     }
 
@@ -93,6 +131,8 @@ abstract class Repository implements RepositoryInterface
      */
     public function findBy(string $attribute, $value, array $columns = ['*']): ?Model
     {
+        $this->applyCriterias();
+
         return $this->model->where($attribute, '=', $value)->first($columns);
     }
 
@@ -105,6 +145,8 @@ abstract class Repository implements RepositoryInterface
      */
     public function findAllBy(string $attribute, $value, $columns = ['*']): Collection
     {
+        $this->applyCriterias();
+
         return $this->model->where($attribute, '=', $value)->get($columns);
     }
 
@@ -162,11 +204,13 @@ abstract class Repository implements RepositoryInterface
      */
     public function paginate(int $perPage = 20, array $columns = ['*']): LengthAwarePaginator
     {
+        $this->applyCriterias();
+
         return $this->model->paginate($perPage, $columns);
     }
 
     /**
-     * @param \Illuminate\Support\Collection|array|int|string $ids
+     * @param mixed $ids
      *
      * @return int
      */
@@ -180,6 +224,34 @@ abstract class Repository implements RepositoryInterface
      */
     public function createQueryBuilder(): Builder
     {
-        return $this->model->query();
+        $this->model = $this->model->query();
+
+        $this->applyCriterias();
+
+        return $this->model;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function applyCriterias(): self
+    {
+        if ($this->getCriterias()->isNotEmpty()) {
+            $this->getCriterias()->each(
+                function (CriteriaInterface $criteria) {
+                    $this->model = $criteria->apply($this->model);
+                }
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    protected function getCriterias(): Collection
+    {
+        return $this->criterias;
     }
 }

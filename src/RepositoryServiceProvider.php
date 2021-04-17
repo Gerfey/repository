@@ -2,6 +2,7 @@
 
 namespace Gerfey\Repository;
 
+use Gerfey\Repository\Console\RepositoryCriteriaMakeCommand;
 use Gerfey\Repository\Console\RepositoryMakeCommand;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,7 +13,8 @@ class RepositoryServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands(
                 [
-                    RepositoryMakeCommand::class
+                    RepositoryMakeCommand::class,
+                    RepositoryCriteriaMakeCommand::class
                 ]
             );
         }
