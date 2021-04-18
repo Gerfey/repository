@@ -76,6 +76,7 @@ class TestController extends Controller {
 
     public function index(TestRepository $testRepository) {    
         $testRepository->addCriteria(new TestActiveCriteria());        
+        $testRepository->addCriteria(TestActiveCriteria::class);        
         return \Response::json($testRepository->all());
     }
 }
