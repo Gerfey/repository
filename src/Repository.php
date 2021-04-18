@@ -48,12 +48,18 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * @param CriteriaInterface $criteria
+     * @param mixed $criteria
      *
      * @return Repository
+     *
+     * @throws BindingResolutionException
      */
-    public function addCriteria(CriteriaInterface $criteria): self
+    public function addCriteria($criteria): self
     {
+        if (!$criteria instanceof CriteriaInterface) {
+            $criteria = Container::getInstance()->make($criteria);
+        }
+
         $this->criterias->push($criteria);
 
         return $this;
