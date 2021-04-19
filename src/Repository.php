@@ -230,11 +230,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function createQueryBuilder(): Builder
     {
-        $this->model = $this->model->newQuery();
-
         $this->applyCriterias();
 
-        return $this->model;
+        return $this->model->query();
     }
 
     /**
